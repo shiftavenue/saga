@@ -8,7 +8,7 @@
     There is no schema validation against available Entra attributes!
 .EXAMPLE
     Import-SagaEntraAttribute -CsvPath 'C:\temp\users.csv'
-    
+
     Import attributes to users in Entra ID from a CSV file.
 .PARAMETER WhatIf
     Shows what would happen if the cmdlet runs. The cmdlet is not run.
@@ -52,7 +52,7 @@ function Import-SagaEntraAttribute
     }
     else
     {
-        Import-Csv -Path $Path
+        Import-Csv -Path $CsvPath
     }
 
     if (-not $PSCmdlet.ShouldProcess("$($bulkData.Count) users", "Update")) { return }
@@ -63,7 +63,7 @@ function Import-SagaEntraAttribute
     [hashtable[]] $requests = foreach ($item in $bulkData)
     {
         $body = @{}
-    
+
         foreach ($property in $item.PsObject.Properties.Where({ $_.Name -ne 'UserPrincipalName' }))
         {
             $body[$property.Name] = $property.Value

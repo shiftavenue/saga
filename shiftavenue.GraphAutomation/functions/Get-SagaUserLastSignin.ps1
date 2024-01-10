@@ -5,7 +5,7 @@
     Gets the last signin time for all users in the Saga tenant.
 .EXAMPLE
     Get-SagaUserLastSignIn
-    
+
     Gets the last signin time for all users in the Saga tenant.
 #>
 function Get-SagaUserLastSignIn

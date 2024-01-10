@@ -13,7 +13,7 @@
     Prompts you for confirmation before running the cmdlet.
 .EXAMPLE
     Disable-SagaPrincipal -ServicePrincipalAppId '00000000-0000-0000-0000-000000000000' -AccountType 'servicePrincipal'
-    
+
     Disables the service principal with the app id '00000000-0000-0000-0000-000000000000'.
 #>
 function Disable-SagaPrincipal
