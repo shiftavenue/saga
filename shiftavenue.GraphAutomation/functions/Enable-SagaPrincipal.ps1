@@ -9,7 +9,7 @@
     The type of account to enable. Valid values are 'servicePrincipal' or 'user'.
 .EXAMPLE
     Enable-SagaPrincipal -ServicePrincipalAppId '00000000-0000-0000-0000-000000000000' -AccountType 'servicePrincipal'
-    
+
     Enables the service principal with the app id '00000000-0000-0000-0000-000000000000'.
 .PARAMETER WhatIf
     Shows what would happen if the cmdlet runs. The cmdlet is not run.

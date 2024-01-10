@@ -11,11 +11,12 @@
     Whether to enable or disable the account.
 .EXAMPLE
     Set-SagaAccountStatus -ServicePrincipalAppId '00000000-0000-0000-0000-000000000000' -AccountType 'servicePrincipal' -Enabled $false
-    
+
     Disables the service principal with the app id '00000000-0000-0000-0000-000000000000'.
 #>
 function Set-SagaAccountStatus
 {
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "")]
     [CmdletBinding()]
     param
     (

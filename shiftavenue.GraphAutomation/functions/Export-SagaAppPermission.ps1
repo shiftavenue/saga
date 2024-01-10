@@ -11,7 +11,7 @@
     The path to the Excel file to export the summary data to.
 .EXAMPLE
     Export-SagaAppPermission -SingleReportPath 'C:\temp\GraphAppInventory.xlsx' -SummaryReportPath 'C:\temp\GraphAppInventorySummary.xlsx'
-    
+
     Exports all service principals and their permissions to an Excel file.
 #>
 function Export-SagaAppPermission
@@ -35,10 +35,10 @@ function Export-SagaAppPermission
     {
         $preparedOutput = [System.Collections.ArrayList]::new()
     }
-    
+
     process
     {
-        foreach ($sp in $servicePrincipals)
+        foreach ($sp in $ServicePrincipal)
         {
             $null = $preparedOutput.Add([PSCustomObject][ordered]@{
                     "Service Principal Name"             = $SP.displayName
@@ -65,34 +65,31 @@ function Export-SagaAppPermission
             )
         }
     }
-    
+
     end
     {
         #Export the result to Excel file
         $output | Export-Excel -Path $SingleReportPath
         $output | Export-Excel -Path $SummaryReportPath -WorksheetName "$((Get-Date).ToString('yyyy-MM-dd_HH-mm-ss'))_GraphAppInv" -TableName "GraphAppInv_$((Get-Date).ToString('yyyy-MM-dd_HH-mm-ss'))"
-    
+
         # Prep table
         Copy-Item -Path $SummaryReportPath -Destination "$SummaryReportPath.bak" -Force
         Remove-Worksheet -WorksheetName Reporting -Path $SummaryReportPath -ErrorAction SilentlyContinue
         $package = Open-ExcelPackage -Path $SummaryReportPath -KillExcel
-    
+
         $summaryData = foreach ($worksheet in $package.Workbook.Worksheets.Where({ $_.Name -ne 'Reporting' }))
         {
             $doc = Import-Excel -Path $SummaryReportPath -WorksheetName $worksheet.Name
             [pscustomobject]@{
                 Date             = $worksheet.Name
                 'NumberSPs'      = $doc.Count
-                # Column naming, David ;)
-                'NumberDisabled' = $doc.Where({ ($_.PSObject.Properties.Name -contains 'AccountEnabled' -and -not $_.AccountEnabled) -or ($_.PSObject.Properties.Name -contains 'Enabled' -and -not $_.Enabled) }).Count
-                'NumberEnabled'  = $doc.Where({ ($_.PSObject.Properties.Name -contains 'AccountEnabled' -and $_.AccountEnabled) -or ($_.PSObject.Properties.Name -contains 'Enabled' -and $_.Enabled) }).Count
+                'NumberDisabled' = $doc.Where({ $_.PSObject.Properties.Name -contains 'Enabled' -and -not $_.Enabled }).Count
+                'NumberEnabled'  = $doc.Where({ $_.PSObject.Properties.Name -contains 'Enabled' -and $_.Enabled }).Count
             }
         }
-    
+
         $chart = New-ExcelChartDefinition -Title "Service principals over time" -ChartType Area -XRange 'Date'  -YRange "NumberSPs", "NumberDisabled" -SeriesHeader "Number SPs", "Number disabled"
-    
+
         $summaryData | Export-Excel -AutoNameRange -WorksheetName Reporting -MoveToStart -Path $SummaryReportPath -ExcelChartDefinition $chart
-    
-        Write-Host "Abgeschlossen: $(Get-Date)" -ForegroundColor Green
     }
 }

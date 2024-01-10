@@ -11,7 +11,7 @@
     Whether to exclude disabled apps.
 .EXAMPLE
     Get-SagaAppPermission -TimeFrameInDays 30 -ExcludeBuiltInServicePrincipals -ExcludeDisabledApps
-    
+
     Gets the permissions, OAuth scopes, Signins and delegations of all service principals in the tenant for the last 30 days.
 #>
 function Get-SagaAppPermission
@@ -83,7 +83,7 @@ function Get-SagaAppPermission
     foreach ($sp in ($servicePrincipals | Where-Object { $_.appRoleAssignments.Count -gt 0 }))
     {
         $sp | Add-Member -NotePropertyName 'lastModified' -NotePropertyValue (Get-Date($sp.appRoleAssignments.CreationTimestamp | Select-Object -Unique | Sort-Object -Descending | Select-Object -First 1) -format g) -Force
-    
+
         $permissionsByApplication = foreach ($appRoleAssignment in $sp.appRoleAssignments)
         {
             $roleId = (($servicePrincipals | Where-Object id -eq $appRoleAssignment.resourceId).appRoles | Where-Object { $_.id -eq $appRoleAssignment.appRoleId }).Value | Select-Object -Unique
@@ -160,7 +160,7 @@ function Get-SagaAppPermission
 
         $sp | Add-Member -NotePropertyName delegatePermissions -NotePropertyValue $perms -Force
         $sp | Add-Member -NotePropertyName delegateValidUntil -NotePropertyValue (Get-Date($sp.oauth2PermissionGrants.ExpiryTime | Select-Object -Unique | Sort-Object -Descending | Select-Object -First 1) -format g) -Force
-    
+
         $assignedTo = @()
         if (($sp.oauth2PermissionGrants.ConsentType | Select-Object -Unique) -eq "AllPrincipals") { $assignedto += "All users (admin consent)" }
         $assignedto += $perms | ForEach-Object { if ($_ -match "\((.*@.*)\)") { $Matches[1] } }

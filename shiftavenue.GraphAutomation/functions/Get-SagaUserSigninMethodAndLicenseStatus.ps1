@@ -5,7 +5,7 @@
     Get the signin methods and license status for all enabled users in the tenant.
 .EXAMPLE
     Get-SagaUserSigninAndLicenseStatus
-    
+
     Get the signin methods and license status for all users in the tenant.
 #>
 function Get-SagaUserSigninAndLicenseStatus

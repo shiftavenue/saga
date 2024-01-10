@@ -6,7 +6,7 @@
     If the connection is already established, this function does nothing.
 .EXAMPLE
     Connect-SagaGraph
-    
+
     Connects to the Microsoft Graph API with the configured settings.
 #>
 function Connect-SagaGraph
@@ -25,7 +25,7 @@ function Connect-SagaGraph
     $graphMethod = Get-PSFConfig -FullName shiftavenue.GraphAutomation.GraphConnectionMode
 
     $mg = Get-Module -Name MiniGraph
-    $alreadyConnected = & $mg { $script:token -ne $null }
+    $alreadyConnected = & $mg { $null -ne $script:token }
 
     if ($alreadyConnected) { return }
 
