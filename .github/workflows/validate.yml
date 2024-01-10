@@ -1,12 +1,8 @@
 ﻿on: [pull_request]
 
 jobs:
-  validate:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-
-    runs-on: ${{ matrix.os }}
+  validate_winps:
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v1
     - name: Install Prerequisites
@@ -15,3 +11,13 @@ jobs:
     - name: Validate
       run: .\build\vsts-validate.ps1
       shell: powershell
+  validate_pwsh:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install Prerequisites
+      run: .\build\vsts-prerequisites.ps1
+      shell: pwsh
+    - name: Validate
+      run: .\build\vsts-validate.ps1
+      shell: pwsh
