@@ -3,7 +3,7 @@
     $Repository = 'PSGallery'
 )
 
-$modules = @("Pester", "PSScriptAnalyzer")
+$modules = @("Pester", "PSScriptAnalyzer", "PlatyPS")
 
 # Automatically add missing dependencies
 $data = Import-PowerShellDataFile -Path "$PSScriptRoot/../shiftavenue.GraphAutomation/shiftavenue.GraphAutomation.psd1"

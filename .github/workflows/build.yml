@@ -29,6 +29,9 @@ jobs:
     needs: [validate_winps, validate_pwsh]
     steps:
     - uses: actions/checkout@v1
+    - name: Install Prerequisites
+      run: .\build\vsts-prerequisites.ps1
+      shell: pwsh
     - name: Build
       run: ./build/vsts-build.ps1 -ApiKey $env:APIKEY
       shell: pwsh
