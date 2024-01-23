@@ -38,6 +38,8 @@ Write-Host "Creating and populating publishing directory"
 $publishDir = New-Item -Path $WorkingDirectory -Name publish -ItemType Directory -Force
 Copy-Item -Path "$($WorkingDirectory)\shiftavenue.GraphAutomation" -Destination $publishDir.FullName -Recurse -Force
 
+New-ExternalHelp -Path (Join-Path $WorkingDirectory -ChildPath help) -OutputPath $publishDir.FullName -Force
+
 #region Gather text data to compile
 $text = @()
 
