@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Build
-      run: .\build\vsts-build.ps1 -ApiKey $env:APIKEY
+      run: ${GITHUB_WORKSPACE}/build/vsts-build.ps1 -ApiKey $env:APIKEY
       shell: pwsh
       if: ${{env.APIKEY != ''}}
       env:
