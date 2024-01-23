@@ -26,9 +26,11 @@ jobs:
       shell: pwsh
   publish:
     runs-on: ubuntu-latest
+    needs: [validate_winps, validate_pwsh]
     steps:
+    - uses: actions/checkout@v1
     - name: Build
-      run: ${GITHUB_WORKSPACE}/build/vsts-build.ps1 -ApiKey $env:APIKEY
+      run: ./build/vsts-build.ps1 -ApiKey $env:APIKEY
       shell: pwsh
       if: ${{env.APIKEY != ''}}
       env:
