@@ -14,15 +14,15 @@ function Connect-SagaGraph
     [CmdletBinding()]
     param ( )
 
-    $clientId = Get-PSFConfig -FullName shiftavenue.GraphAutomation.GraphClientId
-    $tenantId = Get-PSFConfig -FullName shiftavenue.GraphAutomation.GraphTenantId
+    $clientId = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphClientId
+    $tenantId = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphTenantId
 
     if (-not $clientId -or -not $tenantId)
     {
         Stop-PSFFunction -Message 'Please configure GraphClientId and GraphTenantId' -EnableException $true
     }
 
-    $graphMethod = Get-PSFConfig -FullName shiftavenue.GraphAutomation.GraphConnectionMode
+    $graphMethod = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphConnectionMode
 
     $mg = Get-Module -Name MiniGraph
     $alreadyConnected = & $mg { $null -ne $script:token }
@@ -44,7 +44,7 @@ function Connect-SagaGraph
         'ClientSecret'
         {
             Write-PSFMessage -Message 'Using ClientSecret Authentication'
-            $clientSecret = Get-PSFConfig -FullName shiftavenue.GraphAutomation.GraphClientSecret
+            $clientSecret = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphClientSecret
             if (-not $clientSecret)
             {
                 Stop-PSFFunction -Message 'Please configure GraphClientSecret or switch to DeviceCode/Browser auth' -EnableException
