@@ -36,6 +36,16 @@ function Connect-SagaGraph
             Write-PSFMessage -Message 'Using DeviceCode Authentication'
             Connect-GraphDeviceCode -ClientID $ClientId -TenantID $TenantId
         }
+        'Certificate'
+        {
+            Write-PSFMessage -Message 'Using Certificate Authentication'
+            $certificate = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphCertificate
+            if (-not $certificate)
+            {
+                Stop-PSFFunction -Message 'Please configure GraphCertificate or switch to DeviceCode/Browser auth' -EnableException
+            }
+            Connect-GraphCertificate -Certificate $certificate -ClientID $clientId -TenantID $tenantId
+        }
         'Browser'
         {
             Write-PSFMessage -Message 'Using Browser Authentication'
