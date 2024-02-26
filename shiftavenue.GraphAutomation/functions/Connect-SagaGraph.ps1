@@ -60,7 +60,7 @@ function Connect-SagaGraph
                 Stop-PSFFunction -Message 'Please configure GraphClientSecret or switch to DeviceCode/Browser auth' -EnableException
             }
 
-            Connect-GraphClientSecret -ClientID $ClientId -ClientSecret $ClientSecret -TenantID $TenantId
+            Connect-GraphClientSecret -ClientID $ClientId -ClientSecret $ClientSecret.Password -TenantID $TenantId
         }
     }
 
