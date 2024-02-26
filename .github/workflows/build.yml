@@ -4,16 +4,6 @@
       - main
 
 jobs:
-  validate_winps:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v1
-    - name: Install Prerequisites
-      run: .\build\vsts-prerequisites.ps1
-      shell: powershell
-    - name: Validate
-      run: .\build\vsts-validate.ps1
-      shell: powershell
   validate_pwsh:
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +16,7 @@ jobs:
       shell: pwsh
   publish:
     runs-on: ubuntu-latest
-    needs: [validate_winps, validate_pwsh]
+    needs: [validate_pwsh]
     steps:
     - uses: actions/checkout@v1
     - name: Install Prerequisites
