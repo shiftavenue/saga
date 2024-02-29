@@ -42,8 +42,8 @@ function Get-SagaUserSigninAndLicenseStatus
             {
                 'phoneAuthentication' { '{0}_{1}_{2}_SMSSigninEnabled_{3}' -f 'PhoneAuthentication', $authMethod.phoneNumber, $authMethod.phoneType, $authMethod.smsSignInState }
                 'microsoftAuthenticatorAuthentication' { '{0}_{1}_{2}_{3}' -f 'AuthenticatorApp', $authMethod.displayName, $authMethod.deviceTag, $authMethod.phoneAppVersion }
-                'fido2Authentication' { '{0}_{1:yyyyMMdd}_{2}_{3}' -f 'FIDO2', , $authMethod.createdDateTime, $authMethod.attestationLevel, $authMethod.model }
-                'windowsHelloForBusinessAuthentication' { '{0}_{1:yyyyMMdd}_{2}_strength_{3}' -f 'Hello', , $authMethod.createdDateTime, $authMethod.displayName, $authMethod.keyStrength }
+                'fido2Authentication' { '{0}_{1:yyyyMMdd}_{2}_{3}' -f 'FIDO2', $authMethod.createdDateTime, $authMethod.attestationLevel, $authMethod.model }
+                'windowsHelloForBusinessAuthentication' { '{0}_{1:yyyyMMdd}_{2}_strength_{3}' -f 'Hello', $authMethod.createdDateTime, $authMethod.displayName, $authMethod.keyStrength }
                 'passwordAuthentication' { '{0}_{1:yyyyMMdd-HHmmss}' -f 'Password', $_.createdDateTime }
                 'emailAuthentication' { $authMethod.emailAddress }
             }
