@@ -173,7 +173,7 @@ function Get-SagaAppPermission
     $signInRequest = foreach ($sp in ($servicePrincipals | Where-Object AccountEnabled))
     {
         @{
-            url    = "/auditLogs/signIns?`$filter=(CreatedDateTime ge $TimeFrameDate) and (appid eq '$($sp.appId)') and signInEventTypes/any(t: t eq 'interactiveUser' or t eq 'nonInteractiveUser')"
+            url    = "/auditLogs/signIns?`$filter=(CreatedDateTime ge $TimeFrameDate) and (appid eq '$($sp.appId)') and signInEventTypes/any(t: t eq 'interactiveUser' or t eq 'nonInteractiveUser' or t eq 'managedIdentity' or t eq 'servicePrincipal')"
             method = "GET"
             id     = $accountEnabledCounter
         }
