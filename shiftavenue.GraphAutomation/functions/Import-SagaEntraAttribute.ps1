@@ -15,8 +15,7 @@
 .PARAMETER Confirm
     Prompts you for confirmation before running the cmdlet.
 #>
-function Import-SagaEntraAttribute
-{
+function Import-SagaEntraAttribute {
     [CmdletBinding(DefaultParameterSetName = 'Json', SupportsShouldProcess, ConfirmImpact = 'High')]
     param
     (
@@ -46,12 +45,10 @@ function Import-SagaEntraAttribute
 
     Connect-SagaGraph
 
-    $bulkData = if ($PSCmdlet.ParameterSetName -eq 'Json')
-    {
+    $bulkData = if ($PSCmdlet.ParameterSetName -eq 'Json') {
         Get-Content -Path $JsonPath | ConvertFrom-Json
     }
-    else
-    {
+    else {
         Import-Csv -Path $CsvPath
     }
 
@@ -60,12 +57,10 @@ function Import-SagaEntraAttribute
     $batchCounter = 1
     $idToUser = @{}
 
-    [hashtable[]] $requests = foreach ($item in $bulkData)
-    {
+    [hashtable[]] $requests = foreach ($item in $bulkData) {
         $body = @{}
 
-        foreach ($property in $item.PsObject.Properties.Where({ $_.Name -ne 'UserPrincipalName' }))
-        {
+        foreach ($property in $item.PsObject.Properties.Where({ $_.Name -ne 'UserPrincipalName' })) {
             $body[$property.Name] = $property.Value
         }
 
@@ -84,14 +79,12 @@ function Import-SagaEntraAttribute
 
     $userUpdate = Invoke-GraphRequestBatch -Request $requests
 
-    foreach ($userUpdate in ($userUpdate | Where-Object { $_.status -in 200..299 }))
-    {
+    foreach ($userUpdate in ($userUpdate | Where-Object { $_.status -in 200..299 })) {
         $user = $idToUser[[int]$userUpdate.Id]
         Write-PSFMessage -Message "Updated $($user.UserPrincipalName)"
     }
 
-    foreach ($userUpdate in ($userUpdate | Where-Object { $_.status -notin 200..299 }))
-    {
+    foreach ($userUpdate in ($userUpdate | Where-Object { $_.status -notin 200..299 })) {
         $user = $idToUser[[int]$userUpdate.Id]
         Write-PSFMessage -Message "Failed to update $($user.UserPrincipalName) with $($userUpdate.status)"
     }

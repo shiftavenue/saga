@@ -4,10 +4,11 @@ This repo contains the PowerShell module shiftavenue.GraphAutomation, serving as
 
 ## Getting started
 
-Install the module from the PowerShell Gallery:
+Install the module from the PowerShell Gallery, allowing clobbering to overwrite Invoke-Graph which may or
+may not be on disk already:
 
 ```powershell
-Install-Module -Name shiftavenue.GraphAutomation
+Install-Module -Name shiftavenue.GraphAutomation -AllowClobber -Scope CurrentUser
 ```
 
 Configure the module with the Graph authentication method of your choice. By registering

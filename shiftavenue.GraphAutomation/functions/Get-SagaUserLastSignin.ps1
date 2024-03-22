@@ -8,8 +8,7 @@
 
     Gets the last signin time for all users in the Saga tenant.
 #>
-function Get-SagaUserLastSignIn
-{
+function Get-SagaUserLastSignIn {
     [CmdletBinding()]
     param
     ( )

@@ -16,8 +16,7 @@
 
     Disables the service principal with the app id '00000000-0000-0000-0000-000000000000'.
 #>
-function Disable-SagaPrincipal
-{
+function Disable-SagaPrincipal {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
     param
     (
@@ -35,8 +34,7 @@ function Disable-SagaPrincipal
     Connect-GraphClientSecret -ClientID $ClientId -ClientSecret $ClientSecret -TenantID $TenantId
     Set-GraphEndpoint -Type beta
 
-    if ($PSCmdlet.ShouldProcess("$($PrincipalId.Count) accounts", "Disable"))
-    {
+    if ($PSCmdlet.ShouldProcess("$($PrincipalId.Count) accounts", "Disable")) {
         Set-SagaAccountStatus -PrincipalId $PrincipalId -AccountType $AccountType -Enabled $false
     }
 }

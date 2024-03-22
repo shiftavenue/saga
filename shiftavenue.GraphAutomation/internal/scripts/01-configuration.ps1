@@ -10,8 +10,7 @@
     }
 	
     try { [System.Security.Cryptography.X509Certificates.X509Certificate2]$certificate = $Value }
-    catch
-    {
+    catch {
         $Result.Message = "Not an X509Certificate2: $Value"
         $Result.Success = $False
         return $Result
@@ -34,8 +33,7 @@ Register-PSFConfigValidation -Name "guid" -ScriptBlock {
     }
 	
     try { [guid]$guid = $Value }
-    catch
-    {
+    catch {
         $Result.Message = "Not a GUID: $Value"
         $Result.Success = $False
         return $Result

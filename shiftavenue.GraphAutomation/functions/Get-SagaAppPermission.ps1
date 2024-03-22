@@ -14,8 +14,7 @@
 
     Gets the permissions, OAuth scopes, Signins and delegations of all service principals in the tenant for the last 30 days.
 #>
-function Get-SagaAppPermission
-{
+function Get-SagaAppPermission {
     [CmdletBinding()]
     param
     (
@@ -35,17 +34,14 @@ function Get-SagaAppPermission
 
     $servicePrincipals = [System.Collections.ArrayList]::new()
 
-    if ($ExcludeBuiltInServicePrincipals)
-    {
+    if ($ExcludeBuiltInServicePrincipals) {
         $query = "servicePrincipals?&`$filter=tags/any(t:t eq 'WindowsAzureActiveDirectoryIntegratedApp')"
     }
 
-    $query = if (-not $ExcludeDisabledApps)
-    {
+    $query = if (-not $ExcludeDisabledApps) {
         "servicePrincipals?&`$filter=accountEnabled eq true"
     }
-    else
-    {
+    else {
         "servicePrincipals"
     }
 
@@ -54,8 +50,7 @@ function Get-SagaAppPermission
 
     $araCounter = 1
     $idToSp = @{}
-    $appRoleAssignmentsRequest = foreach ($sp in $servicePrincipals)
-    {
+    $appRoleAssignmentsRequest = foreach ($sp in $servicePrincipals) {
         @{
             url    = "/servicePrincipals/$($sp.id)/appRoleAssignments"
             method = "GET"
@@ -66,26 +61,21 @@ function Get-SagaAppPermission
     }
 
     $responses = Invoke-GraphRequestBatch -Request $appRoleAssignmentsRequest
-    foreach ($response in $responses)
-    {
+    foreach ($response in $responses) {
         $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'appRoleAssignments' -NotePropertyValue $response.body.value -Force
     }
 
     $assignedPrincipals = ($servicePrincipals | Where-Object { $_.appRoleAssignments.Count -gt 0 }).appRoleAssignments.resourceId | Select-Object -Unique
-    foreach ($principal in $assignedPrincipals)
-    {
-        if ($servicePrincipals.id -notcontains $principal)
-        {
+    foreach ($principal in $assignedPrincipals) {
+        if ($servicePrincipals.id -notcontains $principal) {
             $null = $servicePrincipals.Add((Invoke-GraphRequest -Query "servicePrincipals/$principal"))
         }
     }
 
-    foreach ($sp in ($servicePrincipals | Where-Object { $_.appRoleAssignments.Count -gt 0 }))
-    {
+    foreach ($sp in ($servicePrincipals | Where-Object { $_.appRoleAssignments.Count -gt 0 })) {
         $sp | Add-Member -NotePropertyName 'lastModified' -NotePropertyValue (Get-Date($sp.appRoleAssignments.CreationTimestamp | Select-Object -Unique | Sort-Object -Descending | Select-Object -First 1) -format g) -Force
 
-        $permissionsByApplication = foreach ($appRoleAssignment in $sp.appRoleAssignments)
-        {
+        $permissionsByApplication = foreach ($appRoleAssignment in $sp.appRoleAssignments) {
             $roleId = (($servicePrincipals | Where-Object id -eq $appRoleAssignment.resourceId).appRoles | Where-Object { $_.id -eq $appRoleAssignment.appRoleId }).Value | Select-Object -Unique
             if (!$roleID) { $roleId = "Orphaned ($($appRoleAssignment.appRoleId))" }
 
@@ -98,8 +88,7 @@ function Get-SagaAppPermission
 
     $oauthCounter = 1
     $idToSp = @{}
-    $oauth2PermissionGrantsRequest = foreach ($sp in $servicePrincipals)
-    {
+    $oauth2PermissionGrantsRequest = foreach ($sp in $servicePrincipals) {
         @{
             url    = "/servicePrincipals/$($sp.id)/oauth2PermissionGrants"
             method = "GET"
@@ -110,8 +99,7 @@ function Get-SagaAppPermission
     }
 
     $responses = Invoke-GraphRequestBatch -Request $oauth2PermissionGrantsRequest
-    foreach ($response in $responses)
-    {
+    foreach ($response in $responses) {
         $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'oauth2PermissionGrants' -NotePropertyValue $response.body.value -Force
     }
 
@@ -120,10 +108,8 @@ function Get-SagaAppPermission
 
     $userCounter = 1
     $idToSp = @{}
-    $grantedUsersRequest = foreach ($principal in $grantedPrincipals)
-    {
-        if ($users.id -notcontains $principal)
-        {
+    $grantedUsersRequest = foreach ($principal in $grantedPrincipals) {
+        if ($users.id -notcontains $principal) {
             @{
                 url    = "/users/$($principal)?`$select=UserPrincipalName"
                 method = "GET"
@@ -134,32 +120,28 @@ function Get-SagaAppPermission
         }
     }
 
-    if ($grantedUsersRequest)
-    {
+    if ($grantedUsersRequest) {
         $responses = Invoke-GraphRequestBatch -Request $grantedUsersRequest
 
         $users = @{}
-        foreach ($response in $responses)
-        {
+        foreach ($response in $responses) {
             $users[$idToSp[[int]$response.id]] = $response.body.UserPrincipalName
         }
     }
 
-    foreach ($sp in ($ServicePrincipals | Where-Object { $_.oauth2PermissionGrants.Count -gt 0 }))
-    {
-        $perms = foreach ($oauth2PermissionGrant in $sp.oauth2PermissionGrants)
-        {
+    foreach ($sp in ($ServicePrincipals | Where-Object { $_.oauth2PermissionGrants.Count -gt 0 })) {
+        $perms = foreach ($oauth2PermissionGrant in $sp.oauth2PermissionGrants) {
             $resID = ($servicePrincipals | Where-Object id -eq $appRoleAssignment.resourceId).appDisplayName
-            if ($null -ne $oauth2PermissionGrant.PrincipalId)
-            {
+            if ($null -ne $oauth2PermissionGrant.PrincipalId) {
                 $userId = "($($users[$oauth2PermissionGrant.principalId]))"
             }
             else { $userId = $null }
             "[" + $resID + $userId + "]:$($oauth2PermissionGrant.Scope.TrimStart().Split(' ') -join ',')"
         }
 
+        $validUntil = ($sp.oauth2PermissionGrants.ExpiryTime | Sort-Object -Descending | Select-Object -Unique  -First 1) -replace 'Z$'
         $sp | Add-Member -NotePropertyName delegatePermissions -NotePropertyValue $perms -Force
-        $sp | Add-Member -NotePropertyName delegateValidUntil -NotePropertyValue (Get-Date($sp.oauth2PermissionGrants.ExpiryTime | Select-Object -Unique | Sort-Object -Descending | Select-Object -First 1) -format g) -Force
+        $sp | Add-Member -NotePropertyName delegateValidUntil -NotePropertyValue $validUntil -Force
 
         $assignedTo = @()
         if (($sp.oauth2PermissionGrants.ConsentType | Select-Object -Unique) -eq "AllPrincipals") { $assignedto += "All users (admin consent)" }
@@ -170,8 +152,7 @@ function Get-SagaAppPermission
 
     $accountEnabledCounter = 1
     $idToSp = @{}
-    $signInRequest = foreach ($sp in ($servicePrincipals | Where-Object AccountEnabled))
-    {
+    $signInRequest = foreach ($sp in ($servicePrincipals | Where-Object AccountEnabled)) {
         @{
             url    = "/auditLogs/signIns?`$filter=(CreatedDateTime ge $TimeFrameDate) and (appid eq '$($sp.appId)') and signInEventTypes/any(t: t eq 'interactiveUser' or t eq 'nonInteractiveUser' or t eq 'managedIdentity' or t eq 'servicePrincipal')"
             method = "GET"
@@ -183,20 +164,17 @@ function Get-SagaAppPermission
 
     $responses = Invoke-GraphRequestBatch -Request $signInRequest
 
-    foreach ($response in $responses)
-    {
+    foreach ($response in $responses) {
         $signinsCurrent = $response.body.value
         $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'signInsTimePeriod' -NotePropertyValue $signinsCurrent.Count -Force
         $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'activeUsersTimePeriod' -NotePropertyValue ($signinsCurrent | Group-Object userPrincipalName).Name.Count -Force
 
-        if (($signinsCurrent | Group-Object userPrincipalName).Name.Count -gt 0)
-        {
+        if (($signinsCurrent | Group-Object userPrincipalName).Name.Count -gt 0) {
             $detailed = -join ($signinsCurrent | Group-Object userPrincipalName | Sort-Object Count -Descending | ForEach-Object { "$($_.Name) - $($_.Count) | " })
             $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'signInsTimePeriodDetail' -NotePropertyValue $detailed -Force
             $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'AccountEnabledDesiredState' -NotePropertyValue $true -Force
         }
-        else
-        {
+        else {
             $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'AccountEnabledDesiredState' -NotePropertyValue $false -Force
         }
     }
