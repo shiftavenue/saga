@@ -18,7 +18,7 @@ function Connect-SagaGraph {
 
     if (-not $clientId -or -not $tenantId) {
         $msg = "Please configure GraphClientId and GraphTenantId, e.g. using'`nSet-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphClientId -Value '' -PassThru | Register-PSFConfig`nSet-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphTenantId -Value '' -PassThru | Register-PSFConfig"
-        Stop-PSFFunction -Message 'Please configure GraphClientId and GraphTenantId, e.g. using' -EnableException $true
+        Stop-PSFFunction -Message $msg -EnableException $true
     }
 
     $graphMethod = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphConnectionMode
