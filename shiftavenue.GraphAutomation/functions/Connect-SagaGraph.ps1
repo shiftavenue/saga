@@ -9,17 +9,16 @@
 
     Connects to the Microsoft Graph API with the configured settings.
 #>
-function Connect-SagaGraph
-{
+function Connect-SagaGraph {
     [CmdletBinding()]
     param ( )
 
     $clientId = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphClientId
     $tenantId = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphTenantId
 
-    if (-not $clientId -or -not $tenantId)
-    {
-        Stop-PSFFunction -Message 'Please configure GraphClientId and GraphTenantId' -EnableException $true
+    if (-not $clientId -or -not $tenantId) {
+        $msg = "Please configure GraphClientId and GraphTenantId, e.g. using'`nSet-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphClientId -Value '' -PassThru | Register-PSFConfig`nSet-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphTenantId -Value '' -PassThru | Register-PSFConfig"
+        Stop-PSFFunction -Message 'Please configure GraphClientId and GraphTenantId, e.g. using' -EnableException $true
     }
 
     $graphMethod = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphConnectionMode
@@ -29,34 +28,27 @@ function Connect-SagaGraph
 
     if ($alreadyConnected) { return }
 
-    switch ($graphMethod)
-    {
-        'DeviceCode'
-        {
+    switch ($graphMethod) {
+        'DeviceCode' {
             Write-PSFMessage -Message 'Using DeviceCode Authentication'
             Connect-GraphDeviceCode -ClientID $ClientId -TenantID $TenantId
         }
-        'Certificate'
-        {
+        'Certificate' {
             Write-PSFMessage -Message 'Using Certificate Authentication'
             $certificate = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphCertificate
-            if (-not $certificate)
-            {
+            if (-not $certificate) {
                 Stop-PSFFunction -Message 'Please configure GraphCertificate or switch to DeviceCode/Browser auth' -EnableException
             }
             Connect-GraphCertificate -Certificate $certificate -ClientID $clientId -TenantID $tenantId
         }
-        'Browser'
-        {
+        'Browser' {
             Write-PSFMessage -Message 'Using Browser Authentication'
             Connect-GraphBrowser -ClientID $ClientId -TenantID $TenantId
         }
-        'ClientSecret'
-        {
+        'ClientSecret' {
             Write-PSFMessage -Message 'Using ClientSecret Authentication'
             $clientSecret = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphClientSecret
-            if (-not $clientSecret)
-            {
+            if (-not $clientSecret) {
                 Stop-PSFFunction -Message 'Please configure GraphClientSecret or switch to DeviceCode/Browser auth' -EnableException
             }
 

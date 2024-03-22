@@ -14,8 +14,7 @@
 
     Exports all service principals and their permissions to an Excel file.
 #>
-function Export-SagaAppPermission
-{
+function Export-SagaAppPermission {
     [CmdletBinding()]
     param
     (
@@ -31,15 +30,12 @@ function Export-SagaAppPermission
         $SummaryReportPath = "Report.xslx"
     )
 
-    begin
-    {
+    begin {
         $preparedOutput = [System.Collections.ArrayList]::new()
     }
 
-    process
-    {
-        foreach ($sp in $ServicePrincipal)
-        {
+    process {
+        foreach ($sp in $ServicePrincipal) {
             $null = $preparedOutput.Add([PSCustomObject][ordered]@{
                     "Service Principal Name"             = $SP.displayName
                     "Application Name"                   = $SP.appDisplayName
@@ -66,8 +62,7 @@ function Export-SagaAppPermission
         }
     }
 
-    end
-    {
+    end {
         #Export the result to Excel file
         $output | Export-Excel -Path $SingleReportPath
         $output | Export-Excel -Path $SummaryReportPath -WorksheetName "$((Get-Date).ToString('yyyy-MM-dd_HH-mm-ss'))_GraphAppInv" -TableName "GraphAppInv_$((Get-Date).ToString('yyyy-MM-dd_HH-mm-ss'))"
@@ -77,8 +72,7 @@ function Export-SagaAppPermission
         Remove-Worksheet -WorksheetName Reporting -Path $SummaryReportPath -ErrorAction SilentlyContinue
         $package = Open-ExcelPackage -Path $SummaryReportPath -KillExcel
 
-        $summaryData = foreach ($worksheet in $package.Workbook.Worksheets.Where({ $_.Name -ne 'Reporting' }))
-        {
+        $summaryData = foreach ($worksheet in $package.Workbook.Worksheets.Where({ $_.Name -ne 'Reporting' })) {
             $doc = Import-Excel -Path $SummaryReportPath -WorksheetName $worksheet.Name
             [pscustomobject]@{
                 Date             = $worksheet.Name

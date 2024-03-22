@@ -16,8 +16,7 @@
 .PARAMETER Confirm
     Prompts you for confirmation before running the cmdlet.
 #>
-function Enable-SagaPrincipal
-{
+function Enable-SagaPrincipal {
     [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'High')]
     param
     (
@@ -31,8 +30,7 @@ function Enable-SagaPrincipal
         $AccountType = 'servicePrincipal'
     )
 
-    if ($PSCmdlet.ShouldProcess("$($PrincipalId.Count) accounts", "Disable"))
-    {
+    if ($PSCmdlet.ShouldProcess("$($PrincipalId.Count) accounts", "Disable")) {
         Set-SagaAccountStatus -ServicePrincipalAppId $PrincipalId -AccountType $AccountType -Enabled $true
     }
 }

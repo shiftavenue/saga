@@ -14,8 +14,7 @@
 
     Disables the service principal with the app id '00000000-0000-0000-0000-000000000000'.
 #>
-function Set-SagaAccountStatus
-{
+function Set-SagaAccountStatus {
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions", "")]
     [CmdletBinding()]
     param
@@ -37,8 +36,7 @@ function Set-SagaAccountStatus
     $accountEnabledCounter = 1
     $idToSp = @{}
 
-    $disableRequest = foreach ($sp in $PrincipalId)
-    {
+    $disableRequest = foreach ($sp in $PrincipalId) {
         @{
             url     = "$($AccountType)s/$($sp)"
             method  = "PATCH"
@@ -54,15 +52,12 @@ function Set-SagaAccountStatus
 
     $responses = Invoke-GraphRequestBatch -Request $disableRequest
 
-    foreach ($response in $responses)
-    {
+    foreach ($response in $responses) {
         $sp = $idToSp[$response.id]
-        if ($response.status -in 200 - 299)
-        {
+        if ($response.status -in 200 - 299) {
             Write-PSFMessage -Message "Disabled '$($sp)'"
         }
-        else
-        {
+        else {
             Write-PSFMessage -Message "Error disabling '$($sp)': $($response.body.error.message)" -Level Error
         }
     }

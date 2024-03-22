@@ -4,7 +4,7 @@
     RootModule           = 'shiftavenue.GraphAutomation.psm1'
 
     # Version number of this module.
-    ModuleVersion        = '1.1.0'
+    ModuleVersion        = '1.1.1'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -128,10 +128,6 @@
             # RequireLicenseAcceptance = $false
 
             # External dependent modules of this module
-            ExternalModuleDependencies = @(
-                'MiniGraph'
-                'PSFramework'
-            )
 
         } # End of PSData hashtable
 
