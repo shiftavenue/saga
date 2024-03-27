@@ -15,13 +15,12 @@ function Connect-SagaGraph {
 
     $clientId = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphClientId
     $tenantId = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphTenantId
+    $graphMethod = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphConnectionMode
 
-    if (-not $clientId -or -not $tenantId) {
+    if ($graphMethod -ne 'Azure' -and (-not $clientId -or -not $tenantId)) {
         $msg = "Please configure GraphClientId and GraphTenantId, e.g. using'`nSet-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphClientId -Value '' -PassThru | Register-PSFConfig`nSet-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphTenantId -Value '' -PassThru | Register-PSFConfig"
         Stop-PSFFunction -Message $msg -EnableException $true
     }
-
-    $graphMethod = Get-PSFConfigValue -FullName shiftavenue.GraphAutomation.GraphConnectionMode
 
     $mg = Get-Module -Name MiniGraph
     $alreadyConnected = & $mg { $null -ne $script:token }
@@ -53,6 +52,10 @@ function Connect-SagaGraph {
             }
 
             Connect-GraphClientSecret -ClientID $ClientId -ClientSecret $ClientSecret -TenantID $TenantId
+        }
+        'Azure' {
+            Write-PSFMessage -Message 'Using Azure Authentication'
+            Connect-GraphAzure
         }
     }
 

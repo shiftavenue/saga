@@ -15,11 +15,15 @@ Configure the module with the Graph authentication method of your choice. By reg
 the config you only need to do the setup once 👍
 
 ```powershell
+# Configure authentication using your logged-in Azure account
+Connect-AzAccount
+Set-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphConnectionMode -Value "Azure" -PassThru | Register-PSFConfig
+
 # Configure Client and Tenant ID. If using a personal account, the tenant ID would be 'common'
 Set-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphClientId -Value '' -PassThru | Register-PSFConfig
 Set-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphTenantId -Value '' -PassThru | Register-PSFConfig
 
-# Default, not necessary to configure. Possible: DeviceCode, Browser, Certificate, or ClientSecret
+# Default, not necessary to configure. Possible: Azure, DeviceCode, Browser, Certificate, or ClientSecret
 Set-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphConnectionMode -Value "DeviceCode" -PassThru | Register-PSFConfig
 
 # Depending on your authentication method:

@@ -62,6 +62,7 @@ function Get-SagaAppPermission {
 
     $responses = Invoke-GraphRequestBatch -Request $appRoleAssignmentsRequest
     foreach ($response in $responses) {
+        if ($null -eq $response.id) { continue }
         $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'appRoleAssignments' -NotePropertyValue $response.body.value -Force
     }
 
@@ -102,6 +103,7 @@ function Get-SagaAppPermission {
 
     $responses = Invoke-GraphRequestBatch -Request $oauth2PermissionGrantsRequest
     foreach ($response in $responses) {
+        if ($null -eq $response.id) { continue }
         $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'oauth2PermissionGrants' -NotePropertyValue $response.body.value -Force
     }
 
@@ -127,6 +129,7 @@ function Get-SagaAppPermission {
 
         $users = @{}
         foreach ($response in $responses) {
+            if ($null -eq $response.id) { continue }
             $users[$idToSp[[int]$response.id]] = $response.body.UserPrincipalName
         }
     }
@@ -167,6 +170,7 @@ function Get-SagaAppPermission {
     $responses = Invoke-GraphRequestBatch -Request $signInRequest
 
     foreach ($response in $responses) {
+        if ($null -eq $response.id) { continue }
         $signinsCurrent = $response.body.value
         $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'signInsTimePeriod' -NotePropertyValue $signinsCurrent.Count -Force
         $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'activeUsersTimePeriod' -NotePropertyValue ($signinsCurrent | Group-Object userPrincipalName).Name.Count -Force

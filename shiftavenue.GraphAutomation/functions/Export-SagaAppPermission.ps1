@@ -82,7 +82,7 @@ function Export-SagaAppPermission {
             }
         }
 
-        $chart = New-ExcelChartDefinition -Title "Service principals over time" -ChartType Area -XRange 'Date'  -YRange "NumberSPs", "NumberDisabled" -SeriesHeader "Number SPs", "Number disabled"
+        $chart = New-ExcelChartDefinition -Title "Service principals over time" -ChartType Area -XRange 'Date' -YRange "NumberSPs", "NumberDisabled" -SeriesHeader "Number SPs", "Number disabled"
 
         $summaryData | Export-Excel -AutoNameRange -WorksheetName Reporting -MoveToStart -Path $SummaryReportPath -ExcelChartDefinition $chart
     }

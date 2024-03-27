@@ -44,8 +44,7 @@ Register-PSFConfigValidation -Name "guid" -ScriptBlock {
     return $Result
 }
 
-
-Set-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphConnectionMode -Value DeviceCode -Validation string -Description 'DeviceCode, Browser, Certificate, or ClientSecret' -Default
+Set-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphConnectionMode -Value DeviceCode -Validation string -Description 'Azure, DeviceCode, Browser, Certificate, or ClientSecret' -Default
 Set-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphClientId -Value '' -Validation guid -Description 'Client ID for Graph API' -Default
 Set-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphTenantId -Value '' -Validation guid -Description 'Tenant ID for Graph API' -Default
 Set-PSFConfig -Module shiftavenue.GraphAutomation -Name GraphClientSecret -Value '' -Validation secret -Description 'Client Secret for Graph API' -Default
