@@ -73,7 +73,9 @@ function Get-SagaAppPermission {
     }
 
     foreach ($sp in ($servicePrincipals | Where-Object { $_.appRoleAssignments.Count -gt 0 })) {
-        $sp | Add-Member -NotePropertyName 'lastModified' -NotePropertyValue (Get-Date($sp.appRoleAssignments.CreationTimestamp | Select-Object -Unique | Sort-Object -Descending | Select-Object -First 1) -format g) -Force
+        $date = ($sp.appRoleAssignments.CreationTimestamp | Select-Object -Unique | Sort-Object -Descending | Select-Object -First 1) -as [datetime]
+        if (-not $date) { $date = [DateTime]::MinValue }
+        $sp | Add-Member -NotePropertyName 'lastModified' -NotePropertyValue $date.ToString('g') -Force
 
         $permissionsByApplication = foreach ($appRoleAssignment in $sp.appRoleAssignments) {
             $roleId = (($servicePrincipals | Where-Object id -eq $appRoleAssignment.resourceId).appRoles | Where-Object { $_.id -eq $appRoleAssignment.appRoleId }).Value | Select-Object -Unique
