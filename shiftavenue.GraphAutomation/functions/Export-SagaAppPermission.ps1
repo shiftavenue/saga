@@ -27,7 +27,7 @@ function Export-SagaAppPermission {
         $SingleReportPath = "$(Get-Date -Format 'yyyy-MM-dd')_GraphAppInventory.xlsx",
 
         [Parameter()]
-        $SummaryReportPath = "Report.xslx"
+        $SummaryReportPath = "Report.xlsx"
     )
 
     begin {

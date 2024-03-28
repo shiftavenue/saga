@@ -184,4 +184,6 @@ function Get-SagaAppPermission {
             $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'AccountEnabledDesiredState' -NotePropertyValue $false -Force
         }
     }
+
+    $servicePrincipals
 }
