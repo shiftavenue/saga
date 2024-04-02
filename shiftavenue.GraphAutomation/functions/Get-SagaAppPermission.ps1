@@ -150,7 +150,7 @@ function Get-SagaAppPermission {
 
         $assignedTo = [System.Collections.Generic.List[string]]::new()
         if (($sp.oauth2PermissionGrants.ConsentType | Select-Object -Unique) -eq "AllPrincipals") { $assignedto.Add("All users (admin consent)") }
-        if ($null -ne [string[]]($perms | ForEach-Object { if ($_ -match "\((.*@.*)\)") { $Matches[1] } })) { $assignedto.AddRange() }
+        if ($null -ne [string[]]($perms | ForEach-Object { if ($_ -match "\((.*@.*)\)") { $Matches[1] } })) { $assignedto.AddRange([string[]]($perms | ForEach-Object { if ($_ -match "\((.*@.*)\)") { $Matches[1] } })) }
 
         $sp | Add-Member -NotePropertyName delegateAuthorizedBy -NotePropertyValue ($assignedto | Select-Object -Unique) -Force
     }
