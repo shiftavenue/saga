@@ -16,6 +16,7 @@
 #>
 function Get-SagaAppPermission {
     [CmdletBinding()]
+    [OutputType([System.Collections.ArrayList])]
     param
     (
         [uint16]
