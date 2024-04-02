@@ -85,8 +85,8 @@ function Get-SagaAppPermission {
             "[$($appRoleAssignment.ResourceDisplayName)]:$($roleId -join ',')"
         }
 
-        $sp | Add-Member -NotePropertyName 'permissionsByApplication' -NotePropertyValue ($permissionsByApplication -join ';') -Force
-        $sp | Add-Member -NotePropertyName authorizedByApplication -NotePropertyValue 'An administrator (application persmissions)' -Force
+        $sp | Add-Member -NotePropertyName permissionsByApplication -NotePropertyValue $permissionsByApplication -Force
+        $sp | Add-Member -NotePropertyName authorizedByApplication -NotePropertyValue 'An administrator (application permissions)' -Force
     }
 
     $oauthCounter = 1
@@ -152,7 +152,7 @@ function Get-SagaAppPermission {
         if (($sp.oauth2PermissionGrants.ConsentType | Select-Object -Unique) -eq "AllPrincipals") { $assignedto += "All users (admin consent)" }
         $assignedto += $perms | ForEach-Object { if ($_ -match "\((.*@.*)\)") { $Matches[1] } }
 
-        $sp | Add-Member -NotePropertyName delegateAuthorizedBy -NotePropertyValue $(($assignedto | Select-Object -Unique) -join ",") -Force
+        $sp | Add-Member -NotePropertyName delegateAuthorizedBy -NotePropertyValue ($assignedto | Select-Object -Unique) -Force
     }
 
     $accountEnabledCounter = 1
@@ -176,7 +176,7 @@ function Get-SagaAppPermission {
         $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'activeUsersTimePeriod' -NotePropertyValue ($signinsCurrent | Group-Object userPrincipalName).Name.Count -Force
 
         if (($signinsCurrent | Group-Object userPrincipalName).Name.Count -gt 0) {
-            $detailed = -join ($signinsCurrent | Group-Object userPrincipalName | Sort-Object Count -Descending | ForEach-Object { "$($_.Name) - $($_.Count) | " })
+            $detailed = $signinsCurrent | Group-Object userPrincipalName | Sort-Object Count -Descending | ForEach-Object { "$($_.Name) - $($_.Count)" }
             $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'signInsTimePeriodDetail' -NotePropertyValue $detailed -Force
             $idToSp[[int]$response.id] | Add-Member -NotePropertyName 'AccountEnabledDesiredState' -NotePropertyValue $true -Force
         }

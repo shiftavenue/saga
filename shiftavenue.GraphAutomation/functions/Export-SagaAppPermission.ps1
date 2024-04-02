@@ -48,14 +48,14 @@ function Export-SagaAppPermission {
                     "AccountEnabled"                     = $SP.AccountEnabled
                     "AccountEnabledDesiredState"         = if ($SP.AccountEnabledDesiredState) { $SP.AccountEnabledDesiredState } else { $false }
                     "Last modified"                      = $sp.lastModified
-                    "Permissions (application)"          = $sp.permissionsByApplication
+                    "Permissions (application)"          = $sp.permissionsByApplication -join '|'
                     "Authorized By (application)"        = $sp.authorizedByApplication
-                    "Permissions (delegate)"             = $sp.delegatePermissions
+                    "Permissions (delegate)"             = $sp.delegatePermissions -join '|'
                     "Valid until (delegate)"             = $sp.delegateValidUntil
-                    "Authorized By (delegate)"           = $sp.delegateAuthorizedBy
+                    "Authorized By (delegate)"           = $sp.delegateAuthorizedBy -join '|'
                     "SignIns last $TimeFrameInDays days" = $sp.signInsTimePeriod
                     "Active Users $TimeFrameInDays days" = $sp.activeUsersTimePeriod
-                    "Detailed SignIns"                   = $sp.signInsTimePeriodDetail
+                    "Detailed SignIns"                   = $sp.signInsTimePeriodDetail -join '|'
                     "SignInAudience"                     = $sp.signInAudience
                 }
             )
