@@ -141,16 +141,16 @@ function Get-SagaAppPermission {
                 $userId = "($($users[$oauth2PermissionGrant.principalId]))"
             }
             else { $userId = $null }
-            "[" + $resID + $userId + "]:$($oauth2PermissionGrant.Scope.TrimStart().Split(' ') -join ',')"
+            "[$($resID)$($userId)]:$($oauth2PermissionGrant.Scope.TrimStart().Split(' ') -join ',')"
         }
 
         $validUntil = ($sp.oauth2PermissionGrants.ExpiryTime | Sort-Object -Descending | Select-Object -Unique  -First 1) -replace 'Z$'
         $sp | Add-Member -NotePropertyName delegatePermissions -NotePropertyValue $perms -Force
         $sp | Add-Member -NotePropertyName delegateValidUntil -NotePropertyValue $validUntil -Force
 
-        $assignedTo = @()
-        if (($sp.oauth2PermissionGrants.ConsentType | Select-Object -Unique) -eq "AllPrincipals") { $assignedto += "All users (admin consent)" }
-        $assignedto += $perms | ForEach-Object { if ($_ -match "\((.*@.*)\)") { $Matches[1] } }
+        $assignedTo = [System.Collections.Generic.List[string]]::new()
+        if (($sp.oauth2PermissionGrants.ConsentType | Select-Object -Unique) -eq "AllPrincipals") { $assignedto.Add("All users (admin consent)") }
+        if ($null -ne [string[]]($perms | ForEach-Object { if ($_ -match "\((.*@.*)\)") { $Matches[1] } })) { $assignedto.AddRange() }
 
         $sp | Add-Member -NotePropertyName delegateAuthorizedBy -NotePropertyValue ($assignedto | Select-Object -Unique) -Force
     }
