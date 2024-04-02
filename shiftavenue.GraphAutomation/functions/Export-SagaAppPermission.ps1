@@ -64,8 +64,8 @@ function Export-SagaAppPermission {
 
     end {
         #Export the result to Excel file
-        $output | Export-Excel -Path $SingleReportPath
-        $output | Export-Excel -Path $SummaryReportPath -WorksheetName "$((Get-Date).ToString('yyyy-MM-dd_HH-mm-ss'))_GraphAppInv" -TableName "GraphAppInv_$((Get-Date).ToString('yyyy-MM-dd_HH-mm-ss'))"
+        $preparedOutput | Export-Excel -Path $SingleReportPath
+        $preparedOutput | Export-Excel -Path $SummaryReportPath -WorksheetName "$((Get-Date).ToString('yyyy-MM-dd_HH-mm-ss'))_GraphAppInv" -TableName "GraphAppInv_$((Get-Date).ToString('yyyy_MM_dd_HH_mm_ss'))"
 
         # Prep table
         Copy-Item -Path $SummaryReportPath -Destination "$SummaryReportPath.bak" -Force
