@@ -15,7 +15,7 @@ function Get-SagaUserSigninAndLicenseStatus {
 
     Connect-SagaGraph
 
-    [System.Collections.Arraylist]$users = Invoke-GraphRequest -Query "users?`$filter=accountEnabled eq true&`$select=UserPrincipalName,id"
+    [System.Collections.Arraylist]$users = MiniGraph\Invoke-GraphRequest -Query "users?`$filter=accountEnabled eq true&`$select=UserPrincipalName,id"
 
     $batchCounter = 1
     $idToUser = @{}

@@ -30,6 +30,8 @@ function Enable-SagaPrincipal {
         $AccountType = 'servicePrincipal'
     )
 
+    Connect-SagaGraph
+
     if ($PSCmdlet.ShouldProcess("$($PrincipalId.Count) accounts", "Disable")) {
         Set-SagaAccountStatus -ServicePrincipalAppId $PrincipalId -AccountType $AccountType -Enabled $true
     }

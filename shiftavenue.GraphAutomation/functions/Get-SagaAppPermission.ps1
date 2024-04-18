@@ -46,7 +46,7 @@ function Get-SagaAppPermission {
         "servicePrincipals"
     }
 
-    $servicePrincipals.AddRange([array](Invoke-GraphRequest -Query $query))
+    $servicePrincipals.AddRange([array](MiniGraph\Invoke-GraphRequest -Query $query))
 
 
     $araCounter = 1
@@ -70,7 +70,7 @@ function Get-SagaAppPermission {
     $assignedPrincipals = ($servicePrincipals | Where-Object { $_.appRoleAssignments.Count -gt 0 }).appRoleAssignments.resourceId | Select-Object -Unique
     foreach ($principal in $assignedPrincipals) {
         if ($servicePrincipals.id -notcontains $principal) {
-            $null = $servicePrincipals.Add((Invoke-GraphRequest -Query "servicePrincipals/$principal"))
+            $null = $servicePrincipals.Add((MiniGraph\Invoke-GraphRequest -Query "servicePrincipals/$principal"))
         }
     }
 

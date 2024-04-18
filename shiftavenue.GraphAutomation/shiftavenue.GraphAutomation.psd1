@@ -4,7 +4,7 @@
     RootModule           = 'shiftavenue.GraphAutomation.psm1'
 
     # Version number of this module.
-    ModuleVersion        = '1.2.4'
+    ModuleVersion        = '1.3.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -81,6 +81,7 @@
         'Get-SagaUserLastSignin'
         'Get-SagaUserSigninAndLicenseStatus'
         'Import-SagaEntraAttribute'
+        'Add-SagaAppPermission'
     )
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
@@ -107,13 +108,13 @@
         PSData = @{
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags                       = @('Azure', 'Graph', 'Entra')
+            Tags       = @('Azure', 'Graph', 'Entra')
 
             # A URL to the license for this module.
-            LicenseUri                 = 'https://raw.github.com/shiftavenue/saga/main/LICENSE'
+            LicenseUri = 'https://raw.github.com/shiftavenue/saga/main/LICENSE'
 
             # A URL to the main website for this project.
-            ProjectUri                 = 'https://github.com/shiftavenue/saga'
+            ProjectUri = 'https://github.com/shiftavenue/saga'
 
             # A URL to an icon representing this module.
             # IconUri = ''
