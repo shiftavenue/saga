@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     Add permissions to a user, group, or service principal.
 .DESCRIPTION
