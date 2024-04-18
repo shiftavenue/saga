@@ -31,8 +31,7 @@ function Disable-SagaPrincipal {
         $AccountType = 'servicePrincipal'
     )
 
-    Connect-GraphClientSecret -ClientID $ClientId -ClientSecret $ClientSecret -TenantID $TenantId
-    Set-GraphEndpoint -Type beta
+    Connect-SagaGraph
 
     if ($PSCmdlet.ShouldProcess("$($PrincipalId.Count) accounts", "Disable")) {
         Set-SagaAccountStatus -PrincipalId $PrincipalId -AccountType $AccountType -Enabled $false
